@@ -5,7 +5,7 @@ require_once 'functions.php';
 if(isUserLoggedin()){
     if ($_SESSION['userData']['ambiente'] == '2'){
 
-        header('Location: indexhmr.php'); 
+        header('Location: index.php'); 
       }elseif($_SESSION['userData']['ambiente'] == '1'){
          header('Location: index.php'); 
       
@@ -23,7 +23,7 @@ $_SESSION['csrf']= $token;
 
 
 
-require_once 'view/top.php';
+require_once 'view/template/top.php';
 
 ?>
 
@@ -83,7 +83,7 @@ require_once 'view/top.php';
                                     </span>
                                 </div>
                                 <div class="card-footer justify-content-center">
-                                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 40px;">Accedi</button>
+                                <button type="submit" class="btn btn-danger btn-block" style="margin-top: 40px;">Accedi</button>
                                 </div>
                             </div>
                         </form>

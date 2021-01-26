@@ -4,7 +4,7 @@ return [
     'mysql_host' => 'localhost',
     'mysql_user' => 'setec',
     'mysql_password' => 'setec@2020',
-    'mysql_db' => 'ERP',
+    'mysql_db' => 'hmr_test',
     'recordsPerPage' => 10,
     'recordsPerPageOptions' => [ 
         5,10,15,20,30,50,100
@@ -13,7 +13,8 @@ return [
         'admin','user','editor','suadmin'
 
     ],
-        'numLinkNavigator' => 4
+        'numLinkNavigator' => 4,
+        $pathAlle="honda/",
 ]
     
 ;

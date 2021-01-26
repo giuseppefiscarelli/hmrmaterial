@@ -2,7 +2,7 @@
 
 //require_once 'functions.php';
 //require_once 'model/user.php';
-require_once 'view/top.php';
+require_once 'view/template/top.php';
             
 $pageUrl= $_SERVER['PHP_SELF'];
 
@@ -23,13 +23,13 @@ $page =getParam ('page',1);
 <div class="wrapper " style="height:94vh;">
   <!--Start sidebar-wrapper-->
 <?php
-    require_once 'view/sidebar.php';
+    require_once 'view/template/sidebar.php';
 ?>
    <!--End sidebar-wrapper-->
 <!--Start topbar header-->
 <div class="main-panel" >
 <?php
-    require_once 'view/topbar_header.php';
+    require_once 'view/template/topbar_header.php';
 ?>    
 <!--End topbar header-->
 

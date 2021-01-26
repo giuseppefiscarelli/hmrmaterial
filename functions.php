@@ -538,3 +538,12 @@
     return $records;
 
   }
+  function seconds2human($ss) {
+    $s = $ss%60;
+    $m = floor(($ss%3600)/60);
+    $h = floor(($ss%86400)/3600);
+    $d = floor(($ss%2592000)/86400);
+   
+    
+    return " $d giorni, $h ore, $m minuti, $s secondi";
+    }

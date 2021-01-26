@@ -20,8 +20,8 @@ $orderDir = $orderDir === 'ASC' ? 'DESC' : 'ASC';
                   <h4 class="card-title">Funzioni</h4>
                 </div>
                 <div class="card-body ">
-                    <a  type="button" style="width:37%;" href="test_rideUpdate.php?action=fastinsert" class="btn btn-success btn-lg btn-round  m-1">Nuovo Test</a>
-				    <a  type="button" style="width:37%;float:right" href="test_rideUpdate.php?action=insert" class="btn btn-warning btn-lg btn-round  m-1">Nuova Prenotazione</a>
+                    <a  type="button"  href="test_rideFast.php" class="btn btn-success btn-lg btn-round  m-1">Nuovo Test</a>
+				    <a  type="button" style="float:right" href="test_rideUpdate.php?action=insert" class="btn btn-warning btn-lg btn-round  m-1">Nuova Prenotazione</a>
 
                 </div>
                 
@@ -167,7 +167,6 @@ $orderDir = $orderDir === 'ASC' ? 'DESC' : 'ASC';
                            
                                 <div class="col-lg-6 col-12">
                                     <label for="recordsPerPage" class="col-lg-4 col-form-label">Record per Pagina</label>
-
                                     <select class="selectpicker"  data-style="select-with-transition"   
                                         name="recordsPerPage" 
                                         id="recordsPerPage" 
@@ -207,8 +206,10 @@ $orderDir = $orderDir === 'ASC' ? 'DESC' : 'ASC';
             <div class="card">
                 <div class="card-header card-header-danger card-header-icon">
                   <div class="card-icon">
-                  <i class="fa fa-motorcycle fa-2x" aria-hidden="true" style="width:auto;">Test Ride</i>
+                  <i class="fa fa-motorcycle fa-2x" aria-hidden="true" style="width:auto;"></i>
+                  
                   </div>
+                  <h3 class="card-title">Test Ride</h3>
                   
                 </div>
                 <div class="card-body">
@@ -273,22 +274,16 @@ $orderDir = $orderDir === 'ASC' ? 'DESC' : 'ASC';
                                             <?=$moto['marca']?> <?=$moto['modello']?><br> <?=$moto['targa']?></a></td>
                                             <td><?=date("d/m/Y H:i", strtotime($tr['data_pren']))?><br><?=$tr['user_pren']?></td>
                                             <td><?=$tr['data_ricons']?date("d/m/Y H:i", strtotime($tr['data_ricons'])):''?></td>
-                                            <td>
-                                            <div class="btn-group m-1" role="group">
-                                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Azioni
+                                            <td class="td-actions text-right">
+                                                <button type="button" onclick="location.href='<?=$pageShowUrl?>?id=<?=$tr['id']?>'" rel="tooltip" class="btn btn-info" data-original-title="" title="">
+                                                    <i class="material-icons">description</i>
+                                                <div class="ripple-container"></div></button>
+                                                <button type="button" onclick="location.href='<?=$updateUrl?>?<?=$navOrderByQueryString?>&page=<?=$page?>&action=update&id=<?=$tr['id']?>'" rel="tooltip" class="btn btn-success" data-original-title="" title="">
+                                                    <i class="material-icons">edit</i>
                                                 </button>
-                                                <div class="dropdown-menu" style="">
-                                                <a href="<?=$pageShowUrl?>?id=<?=$tr['id']?>" class="dropdown-item">
-                                                        <i class="fa fa-book"></i>Gestione</a>
-                                                    <a href="<?=$updateUrl?>?<?=$navOrderByQueryString?>&page=<?=$page?>&action=update&id=<?=$tr['id']?>" class="dropdown-item">
-                                                        <i class="fa fa-edit"></i> Modifica Prenotazione</a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <a onclick="return confirm('Vuoi Eliminare il Record?')"
-                                                    href="<?=$deleteUrl?>?<?=$navOrderByQueryString?>&page=<?=$page?>&id=<?=$tr['id']?>&action=delete" class="dropdown-item">
-                                                        <i class="fa fa-trash"></i> Elimina</a>
-                                                </div> 
-                                                </div>
+                                                <button type="button" onclick="return swal({title: 'Vuoi Eliminare il Test Ride?',icon: 'warning',button: 'Elimina',})"  href="<?=$deleteUrl?>?<?=$navOrderByQueryString?>&page=<?=$page?>&id=<?=$tr['id']?>&action=delete"rel="tooltip" class="btn btn-danger" data-original-title="" title="">
+                                                    <i class="material-icons">close</i>
+                                                </button>
                                             </td>
 
                                     </tr>

@@ -37,8 +37,12 @@ if(!empty($_POST)){
         
         if ($homePage == '2'){
 
-          header('Location: indexhmr.php'); 
+          header('Location: index.php'); 
         }elseif ($homePage == '1'){
+            header('Location: index.php'); 
+        }elseif ($homePage == '11'){
+            $_SESSION['success'] = $result['success'];
+            $_SESSION['message'] = $result['message'];
             header('Location: index.php'); 
         }else{
             $_SESSION['message'] = $result['message'];

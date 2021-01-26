@@ -28,24 +28,32 @@ switch ($action){
         $_SESSION['success'] = $res;
         header('Location:../test_ride.php?'.$queryString);
         break;
-    case 'saveTestride':
+    case 'saveTestridefast':
         $data = $_POST;
-       
-        $firma = $_POST['signCode'];
-        $idfirma = $_POST['id_cliente'];
+       // var_dump($pathAlle);
+       //die;
+        $firma = $data['signCode'];
+        $idfirma = $data['id_cliente'];
         $firma = substr($firma,strpos($firma,",")+1);
         $firma = base64_decode($firma);
-        $path = $_SERVER['DOCUMENT_ROOT'].'/ERP/HMR/docs/testride/sign/';
-        
-        $res = saveTestride($data); 
+        $path = $_SERVER['DOCUMENT_ROOT'].$pathAlle.'docs/testride/sign/';        
+        $res = saveTestridefast($data); 
         $message = $res ? 'Record Inserito' : 'Errore Inserimento Record!';
         $_SESSION['message'] = $message;
         $_SESSION['success'] = $res;
         //var_dump($res);
-        $file = $path.$idfirma.'_sig_pren_tr_'.$res.'.png';
+        $file = $path.$idfirma.'_sig_cons_tr_'.$res.'.png';
         file_put_contents($file, $firma);
         header('Location:../test_ridePage.php?id='.$res);
     break;
+    case 'savePrenotazione':
+        $data = $_POST;
+        $res=saveTestride($data);
+        header('Location:../index.php');
+        
+
+
+    break; 
     
     case 'storeTestride':
         $data = $_POST;
@@ -67,7 +75,7 @@ switch ($action){
         $firma = substr($firma,strpos($firma,",")+1);
         $firma = base64_decode($firma);
         //var_dump($firma);die;
-        $path = $_SERVER['DOCUMENT_ROOT'].'/ERP/HMR/docs/testride/sign/';
+        $path = '/docs/testride/sign/';
         
         //var_dump($id);die;
         $res = storeTestride($data,$id); 
@@ -84,7 +92,37 @@ switch ($action){
     break;
     
     case 'getkm':
-        getKM();
+       $targa = $_REQUEST['id_veicolo'];
+       $res= getKM($targa);
+        
+       echo json_encode($res);
         
     break;    
+
+    case 'getEvent':
+      $res = getEvent();   
+      echo json_encode($res);
+    break;
+
+    case 'checkEvent':
+
+        $data =$_REQUEST;
+        $res=checkEvent($data);
+        if($res){
+
+            $json= array(
+                    'da'=> date("d/m", strtotime($res['data_pren'])),
+                    'daora' => date("H:i", strtotime($res['data_pren'])),
+                    'a'=> date("d/m", strtotime($res['data_ricons'])),
+                    'aora' => date("H:i", strtotime($res['data_ricons'])),
+                    'veicolo'=>$res['id_veicolo']
+
+
+            );
+            echo json_encode($json);
+        }else{
+            echo 0;
+        }
+        
+    break;
    }

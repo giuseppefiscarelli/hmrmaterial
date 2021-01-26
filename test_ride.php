@@ -16,7 +16,7 @@ $authPage = $_SESSION['userData']['ambiente'];
 $authThisPage =basename($_SERVER['PHP_SELF']);
 require_once 'headerInclude.php';
 ?>
-<div class="content" style="background-image: url(images/6.jpg);background-size:cover;background-attachment: fixed;">
+<div class="content" style="background-image: url(images/5.jpg);background-size:cover;background-attachment: fixed;">
         <div class="container-fluid">
           <!-- your content here -->
         
@@ -33,7 +33,7 @@ require_once 'headerInclude.php';
 		require_once 'controller/displayTestride.php' ;
 	   
 	  }	
-
+   // var_dump(basename($_SERVER['PHP_SELF']));
 	?>
 
 
@@ -44,7 +44,7 @@ require_once 'headerInclude.php';
 <!--End Dashboard Content-->
 
 <?php
-    require_once 'view/footer.php';
+    require_once 'view/template/footer.php';
 ?>
 <script type="text/javascript">
   function allowNumbersOnly(e){
@@ -59,6 +59,41 @@ require_once 'headerInclude.php';
    
 </script>
 
+<script type="text/javascript">
+  function prtPdf() {
+   
+    $from = $('#from1').val();
+    $to = $('#to1').val();
+    $type = 'P';
+	  var url = 'report/testride/reportlist.php?from='+$from+'&to='+$to+'&type='+$type;
+	  window.open(url,"Stampa");
+    
+   };
+   function prtPdf2() {
+    
+   $from = $('#from2').val();
+   $to = $('#to2').val();
+   $type = 'E';
+   var url = 'report/testride/reportlist.php?from='+$from+'&to='+$to+'&type='+$type;
+   window.open(url,"Stampa");
+   
+  };
+  function prtPdf3() {
+    
+    $from = $('#from2').val();
+    $to = $('#to2').val();
+    
+    $search2 =$('#search2').val();
+    $search3 =$('#search3').val();
+    $search4 =$('#search4').val();
+    $search5 =$('#search5').val();
+    $search6 =$('#search6').val();
 
+    $type = 'A';
+    var url = 'report/testride/reportlist.php?type=&search2='+$search2+'&search3='+$search3+'&search4='+$search4+'&search5='+$search5+'&search6='+$search6;
+    window.open(url,"Stampa");
+    
+   };
+</script>
     </body>
 </html>    

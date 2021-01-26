@@ -1,5 +1,5 @@
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-12">
                 <div class="card " style="    background-color: #dee2e68c;">
                     <div class="card-header card-header-success card-header-icon" >
                         <div class="card-icon" >
@@ -77,11 +77,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> 
                             </div>    
                         </div>
                         <div class="row"><!-- body-->
-                        <input type="hidden" id="signCode" value="">
+                        
                             <div class="col-xl-6 col-sm-12">
                                 <div class="card ">
                                         <div class="card-header card-header-info card-header-icon" >
@@ -159,89 +159,95 @@
                                 
                                         </div>
                                     <div class="card-body ">
+                                        <form enctype="multipart/form-data" id="addform" action="controller/updateTestride.php" method="post">   
 
-                                        <input type="hidden" name="id_cliente" id="id_cliente" value="">
-                                        <div class="form-row">
-                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal3">
-                                            <i class="fa fa-plus"></i> <i class="fa fa-motorcycle"></i> Inserisci nuovo Veicolo
-                                            </button>
-                                        </div>
+                                            <input type="hidden" name="id_cliente" id="id_cliente" value="">
+                                            <input type="hidden" name="codfiscale" id="id_cf" value="">
+                                            <input type="hidden" id="signCode" name="signCode"value="">
+                                            <input type="hidden" name="action" value="saveTestridefast">
+                                            <div class="form-row">
+                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal3">
+                                                <i class="fa fa-plus"></i> <i class="fa fa-motorcycle"></i> Inserisci nuovo Veicolo
+                                                </button>
+                                            </div>
 
-                                        <div class="form-group col-xl-8 bmd-form-group">
-                                            <label for="id_veicolo">Motoveicolo</label>
-                                            <select class="form-control selectpicker" data-style="btn btn-link" id="id_veicolo" name="id_veicolo">
-                                            <option value="">Seleziona un modello</option> 
-                                                <?php
-                                                    if($moto){
-                                                    foreach ($moto as $m){                              
-                                                      
-                                                ?>
-                                            
-                                                <option data-content='<span class="badge m-1" style="background-color:<?=$m['colore_tr']?>"><i class="fa fa-motorcycle"></i> </span> <?=$m['marca']?> <?=$m['modello']?> <?=$m['targa']?>' value="<?=$m['targa']?>"> </option>
-                                                <?php 
-                                                    }
-                                                } ?>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group col-xl-4  bmd-form-group">
-                                            <label for="p">KM</label>
-                                            <input type="number" class="form-control" style="text-align: center;" id="km_cons" name="km_cons" />
-                                        </div>
-                                        <div class="form-group col-xl-5 bmd-form-group">
-                                            <label for="durata_test">Durata</label>
-                                            <select class="form-control selectpicker" data-style="btn btn-link" id="durata_test" name="durata_test">
-                                                <option >Seleziona Durata</option>
-                                               
-                                                <option value="30">30 minuti</option>
-                                                <option value="60">1 ora</option>
-                                                <option value="90">1 ora e 1/2</option>
-                                                <option value="120">2 ore</option>
-                                                <option value="800">Intera giornata</option>
-                                                <option value="1000">Lungo Termine</option>
-                                                
-                                               
-                                            </select>
-                                           
-                                        </div>
-                                        <div id="rowstato" style="display:none;" >        
-                                            <hr>
-                                            <div class="row" >
-                                            
-                                                <div class="col-xl-4 col-12">
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                                    <i class="fa fa-list"></i> Stato veicolo
-                                                    </button>
-                                                </div>
-                                                <div class="col-xl-8 col-12" id="anomalia" style="display:none;">
-                                                    <div class="alert alert-warning">
+                                            <div class="form-group col-xl-8 bmd-form-group">
+                                                <label for="id_veicolo">Motoveicolo</label>
+                                                <select class="form-control selectpicker" data-style="btn btn-link" id="id_veicolo" name="id_veicolo">
+                                                <option value="">Seleziona un modello</option> 
+                                                    <?php
+                                                        if($moto){
+                                                        foreach ($moto as $m){                              
                                                         
-                                                        <span>
-                                                        <b> Attenzione - </b> Il Veicolo selezionato presenta Anomalie/Danni</span>
+                                                    ?>
+                                                
+                                                    <option data-content='<span class="badge m-1" style="background-color:<?=$m['colore_tr']?>"><i class="fa fa-motorcycle"></i> </span> <?=$m['marca']?> <?=$m['modello']?> <?=$m['targa']?>' value="<?=$m['targa']?>"> </option>
+                                                    <?php 
+                                                        }
+                                                    } ?>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-xl-4  bmd-form-group">
+                                                <label for="p">KM</label>
+                                                <input type="number" class="form-control" style="text-align: center;" id="km_cons" name="km_cons" />
+                                            </div>
+                                            <div class="form-group col-xl-5 bmd-form-group">
+                                                <label for="durata_test">Durata</label>
+                                                <select class="form-control selectpicker" data-style="btn btn-link" id="durata_test" name="durata_test">
+                                                    <option >Seleziona Durata</option>
+                                                
+                                                    <option value="30">30 minuti</option>
+                                                    <option value="60">1 ora</option>
+                                                    <option value="90">1 ora e 1/2</option>
+                                                    <option value="120">2 ore</option>
+                                                    <option value="800">Intera giornata</option>
+                                                    <option value="1000">Lungo Termine</option>
+                                                    
+                                                
+                                                </select>
+                                            
+                                            </div>
+                                            <div id="rowstato" style="display:none;" >        
+                                                <hr>
+                                                <div class="row" >
+                                                
+                                                    <div class="col-xl-4 col-12">
+                                                        <button type="button" id="btn_stat_vei"class="btn btn-primary" data-toggle="modal" data-target="#modal2">
+                                                        <i class="fa fa-list"></i> Stato veicolo
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-xl-8 col-12" id="anomalia" style="display:none;">
+                                                        <div class="alert alert-warning">
+                                                            
+                                                            <span>
+                                                            <b> Attenzione - </b> Il Veicolo selezionato presenta Anomalie/Danni</span>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                            </div>    
+                                            
+                                            <div id="rowfirma" style="display:none;">
+                                                <hr>
+                                                <div class="row" >
+                                            
+                                                    <div class="col-xl-4 col-12">
+                                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal4">
+                                                        <i class="fa fa-pencil"></i> Privacy/Firma
+                                                        </button>
+                                                    </div>    
+                                                </div>
                                             </div>
-                                        </div>    
-                                        
-                                        <div id="rowfirma" style="display:none;">
-                                        <hr>
-                                            <div class="row" >
-                                        
-                                                <div class="col-xl-4 col-12">
-                                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal4">
-                                                    <i class="fa fa-pencil"></i> Privacy/Firma
-                                                    </button>
-                                                </div>    
-                                            </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>    
-                            </div>     
+                            </div> 
+                             
                         </div>
                         
                     </div>
                     <div class="card-footer " style="justify-content: center;background-color: white;padding: 10px;border-radius: 6px;box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);">
-                        <button type="button" id="saveTest" disabled class="btn btn-success">Salva Test Ride</button>
+                        <button type="submit" form="addform"id="saveTest" disabled class="btn btn-success">Salva Test Ride</button>
                       
                         <button type="button" class="btn btn-danger">Annulla</button>
                         
@@ -249,20 +255,26 @@
                 </div>
             </div>
         </div>
+   
 
+
+
+
+
+                                                 
 
             <!--modal-->
             <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="modal1Label" aria-hidden="true"> <!--modal cliente-->
                 <div class="modal-dialog modal-lg" style="max-width: 90%;margin-top:auto;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Inserimento Nuovo Cliente</h5>
+                            <h5 class="modal-title" id="modal1title">Inserimento Nuovo Cliente</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                             <form enctype="multipart/form-data" id="addformcli" method="post" >
-                                <input type="hidden" id="actionCli" value ="storeCliente">
+                                <input type="hidden" id="actionCli" name="actionCli" value ="newCli">
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="card  col-xl-4">
@@ -277,7 +289,7 @@
                                                     <label class="col-sm-3 col-form-label">Ragione Sociale</label>
                                                         <div class="col-sm-9">
                                                             <div class="form-group">
-                                                            <input class="form-control" oninput="this.value = this.value.toUpperCase()" type="text" id="ragsociale" name="ragsociale"  placeholder="Inserire Ragione Sociale"/>
+                                                            <input class="form-control" oninput="this.value = this.value.toUpperCase()" type="text" id="ragsociale" name="ragsociale"  readonly/>
                                                             </div>
                                                         </div>
                                                 </div>
@@ -293,7 +305,7 @@
                                                     <label class="col-sm-3 col-form-label">Nome</label>
                                                         <div class="col-sm-9">
                                                             <div class="form-group">
-                                                            <input class="form-control" oninput="this.value = this.value.toUpperCase()" type="text" id="nome" name="nome"  placeholder="Inserire Nome"  required="true" />
+                                                                <input class="form-control" oninput="this.value = this.value.toUpperCase()" type="text" id="nome" name="nome"  placeholder="Inserire Nome"  required="true" />
                                                             </div>
                                                         </div>
                                                 </div>
@@ -354,26 +366,23 @@
                                                             
                                                         </div>
                                                         <div class="col-sm-4">
-                                                                <button class="btn btn-primary" id="cf"> Calcolo codice</button>
-                                                            </div>
+                                                            <button class="btn btn-primary" id="cf"> Calcolo codice</button>
+                                                        </div>
                                                 </div>
                                                 <div class="row">
                                                     <label class="col-sm-3 col-form-label">partita Iva</label>
                                                         <div class="col-sm-9">
                                                             <div class="form-group">
-                                                            <input class="form-control" type="text" name="required" required="true" />
+                                                            <input class="form-control" id="partitaiva" name="partitaiva"type="text" name="required"  />
                                                             </div>
                                                         </div>
                                                 </div>
-                                            
-                                                
-                                            </div>
-                                        
+                                            </div>                                       
                                         </div>
                                         <div class="card  col-xl-4">
                                             <div class="card-header card-header-info card-header-text">
                                                 <div class="card-text">
-                                                <h4 class="card-title">Dati Residenza</h4>
+                                                    <h4 class="card-title">Dati Residenza</h4>
                                                 </div>
                                             </div>
                                             <div class="card-body">
@@ -461,10 +470,8 @@
                                                             </div>
                                                         </div>
                                                 </div>
-                                            
                                                 
-                                            </div>
-                                        
+                                            </div>                                        
                                         </div>
                                         <div class="card  col-xl-4">
                                             <div class="card-header card-header-info card-header-text">
@@ -559,23 +566,15 @@
                                                 </div>
                                                 <div class="row ">
                                                     <div class="col-xl-6 col-12 ">
-                                                        
                                                         <img id="patfront_pw" src="images/upload.png" rel="nofollow" alt="patfront" style="width:100%;">
-                                                      
                                                         <input class="form-control"type="file" id="patfront" name="patfront"  accept="image/*" capture required="true"/>
                                                     </div>
                                                     <div class="col-xl-6 col-12 ">
                                                         <img id="patrear_pw"  src="images/upload.png" rel="nofollow" alt="patrear" style="width:100%;">
                                                         <input type="file" class="form-control" type="file" id="patrear"  name="patrear" accept="image/*" value=""capture required="true" />
                                                     </div>
-
-                                                </div>
-                                                
-                                                
-                                            
-                                                
+                                                </div> 
                                             </div>
-
                                         </div>
                                     </div>    
                                 </div>
@@ -592,19 +591,69 @@
             <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="modal2Label" aria-hidden="true">
                 <div class="modal-dialog modal-lg" >
                     <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Inserimento Nuovo Cliente</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        ...
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
-                        <button type="button" class="btn btn-success">Inserisci cliente</button>
-                    </div>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Stato veicolo</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <div class="table-responsive">
+                                        <table class="table" id="veimodaltab">
+                                            <tbody>
+                                                <tr><td>Targa</td><td id="modal_targa"></td></tr>
+                                                <tr><td>Marca</td><td id="modal_marca"></td></tr>
+                                                <tr><td>Modello</td><td id="modal_modello"></td></tr>
+                                                <tr> <td>KM</td><td id="modal_km"></td></tr>
+                                            </tbody> 
+                                        </table>
+                                    </div>
+                                </div>   
+                                <div class="col-12 col-lg-6">
+                                    <div class="table-responsive">
+                                        <table class="table" id="veimodaltab2">
+                                            <tbody>
+                                                <tr><td>Condizioni Veicolo</td><td id="modal_stato_veicolo"></td></tr>
+                                                <tr><td>Ultima verifica</td><td id="modal_mod_date"></td></tr>
+                                                <tr><td>Operatore</td><td id="modal_mod_user"></td></tr>
+                                                <tr> <td>Presenza Anomalie</td><td  id="modal_anomalie"></td></tr>
+                                            </tbody> 
+                                        </table>
+                                    </div>
+                                </div>                                
+                            </div> 
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active">
+                                                <img class="d-block w-100" src="images/HONDA.png" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img class="d-block w-100" src="images/800x400.png" alt="Second slide">
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img class="d-block w-100"src="images/800x400.png" alt="Third slide">
+                                            </div>
+                                        </div>
+                                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>   
+                                </div>
+                            </div>         
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                            <button type="button" class="btn btn-success">Salva Modifiche</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -762,7 +811,7 @@
                                                                 
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="priv1" id="priv1a" value="A"> Presto il Consenso
+                                                                        <input class="form-check-input" form="addform" type="radio" name="priv1" id="priv1a" value="A"> Presto il Consenso
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -770,7 +819,7 @@
                                                                 </div>
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="priv1" id="priv1b" value="B"> Nego il Consenso
+                                                                        <input class="form-check-input" form="addform" type="radio" name="priv1" id="priv1b" value="B"> Nego il Consenso
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -804,7 +853,7 @@
                                                             <td>
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="priv2" id="priv2a" value="A"> Presto il Consenso
+                                                                        <input class="form-check-input"form="addform" type="radio" name="priv2" id="priv2a" value="A"> Presto il Consenso
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -814,7 +863,7 @@
                                                                 </div>
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="priv2" id="priv2b" value="B"> Nego il Consenso
+                                                                        <input class="form-check-input" form="addform"type="radio" name="priv2" id="priv2b" value="B"> Nego il Consenso
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -850,7 +899,7 @@
                                                             <td>
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="priv3" id="priv3a" value="A"> Presto il Consenso
+                                                                        <input class="form-check-input" form="addform"type="radio" name="priv3" id="priv3a" value="A"> Presto il Consenso
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -860,7 +909,7 @@
                                                                 </div>
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="priv3" id="priv3b" value="B"> Nego il Consenso
+                                                                        <input class="form-check-input" form="addform"type="radio" name="priv3" id="priv3b" value="B"> Nego il Consenso
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -898,7 +947,7 @@
                                                     <td>
                                                         <div class="form-check form-check-radio form-check-inline">
                                                             <label class="form-check-label">
-                                                                <input class="form-check-input" type="radio" name="quest_tr1" id="quest_tr1a" value="A"> Pubblicità
+                                                                <input class="form-check-input"form="addform" type="radio" name="quest_tr1" id="quest_tr1a" value="A"> Pubblicità
                                                                 <span class="circle">
                                                                     <span class="check"></span>
                                                                 </span>
@@ -907,7 +956,7 @@
 
                                                         <div class="form-check form-check-radio form-check-inline">
                                                             <label class="form-check-label">
-                                                                <input class="form-check-input" type="radio" name="quest_tr1" id="quest_tr1b" value="B"> Internet
+                                                                <input class="form-check-input" form="addform"type="radio" name="quest_tr1" id="quest_tr1b" value="B"> Internet
                                                                 <span class="circle">
                                                                     <span class="check"></span>
                                                                 </span>
@@ -915,24 +964,7 @@
                                                         </div>
                                                         <div class="form-check form-check-radio form-check-inline">
                                                             <label class="form-check-label">
-                                                                <input class="form-check-input" type="radio" name="quest_tr1" id="quest_tr1c" value="C"> Amici
-                                                                <span class="circle">
-                                                                    <span class="check"></span>
-                                                                </span>
-                                                            </label>
-                                                        </div>
-                                                        
-                                                        <div class="form-check form-check-radio form-check-inline">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="radio" name="quest_tr1" id="quest_tr1d" value="D"> Redazionali
-                                                                <span class="circle">
-                                                                    <span class="check"></span>
-                                                                </span>
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check form-check-radio form-check-inline">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="radio" name="quest_tr1" id="quest_tr1e" value="E"> Concessionario Honda
+                                                                <input class="form-check-input"form="addform" type="radio" name="quest_tr1" id="quest_tr1c" value="C"> Amici
                                                                 <span class="circle">
                                                                     <span class="check"></span>
                                                                 </span>
@@ -941,14 +973,31 @@
                                                         
                                                         <div class="form-check form-check-radio form-check-inline">
                                                             <label class="form-check-label">
-                                                                <input class="form-check-input" type="radio" name="quest_tr1" id="quest_tr1f" value="F"> Altro
+                                                                <input class="form-check-input" form="addform"type="radio" name="quest_tr1" id="quest_tr1d" value="D"> Redazionali
+                                                                <span class="circle">
+                                                                    <span class="check"></span>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-radio form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" form="addform"type="radio" name="quest_tr1" id="quest_tr1e" value="E"> Concessionario Honda
+                                                                <span class="circle">
+                                                                    <span class="check"></span>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        
+                                                        <div class="form-check form-check-radio form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" form="addform"type="radio" name="quest_tr1" id="quest_tr1f" value="F"> Altro
                                                                 
                                                                 <span class="circle">
                                                                     <span class="check"></span>
                                                                 </span>
                                                                 
                                                             </label>
-                                                            <input type="text" name="quest_tr1_text" id="quest_tr1_text"clsss="form-control form-control-sm">
+                                                            <input type="text"form="addform" name="quest_tr1_text" id="quest_tr1_text"clsss="form-control form-control-sm">
                                                         </div>
                                                     </td>
                                                     
@@ -961,7 +1010,7 @@
                                                     <td colspan="2">
                                                         <div class="form-group row">
                                                             <div class="col-sm-12">
-                                                                <input type="text" maxlength="100" name="quest_tr2_text" id="quest_tr2_text" class="form-control form-control-sm">
+                                                                <input type="text" maxlength="100"form="addform" name="quest_tr2_text" id="quest_tr2_text" class="form-control form-control-sm">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -975,7 +1024,7 @@
                                                     <td colspan="2">
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="quest_tr3" id="quest_tr3a" value="A"> 3 mesi
+                                                                        <input class="form-check-input"form="addform" type="radio" name="quest_tr3" id="quest_tr3a" value="A"> 3 mesi
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -983,7 +1032,7 @@
                                                                 </div>
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="quest_tr3" id="quest_tr3b" value="B"> 6 Mesi
+                                                                        <input class="form-check-input"form="addform" type="radio" name="quest_tr3" id="quest_tr3b" value="B"> 6 Mesi
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -991,7 +1040,7 @@
                                                                 </div>
                                                                 <div class="form-check form-check-radio form-check-inline">
                                                                     <label class="form-check-label">
-                                                                        <input class="form-check-input" type="radio" name="quest_tr3" id="quest_tr3c" value="C"> Oltre 6 Mesi
+                                                                        <input class="form-check-input" form="addform"type="radio" name="quest_tr3" id="quest_tr3c" value="C"> Oltre 6 Mesi
                                                                         <span class="circle">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -1010,7 +1059,7 @@
                                                     <td colspan="2">
                                                         <div class="form-group row">
                                                             <div class="col-sm-12">
-                                                                <input type="text" maxlength="100"name="quest_tr4" id="quest_tr4" class="form-control form-control-sm">
+                                                                <input type="text" maxlength="100"form="addform"name="quest_tr4" id="quest_tr4" class="form-control form-control-sm">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -1024,7 +1073,7 @@
                                                     <td colspan="2">
                                                         <div class="form-group row">
                                                             <div class="col-sm-12">
-                                                                <input type="text" maxlength="100"name="quest_tr5" id="quest_tr5" class="form-control form-control-sm">
+                                                                <input type="text" maxlength="100"form="addform"name="quest_tr5" id="quest_tr5" class="form-control form-control-sm">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -1038,7 +1087,7 @@
                                                     <td colspan="2">
                                                         <div class="form-group row">
                                                             <div class="col-sm-12">
-                                                                <input type="text" maxlength="100"name="quest_tr6" id="quest_tr6" class="form-control form-control-sm">
+                                                                <input type="text" maxlength="100"form="addform"name="quest_tr6" id="quest_tr6" class="form-control form-control-sm">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -1052,7 +1101,7 @@
                                                     <td colspan="2">
                                                         <div class="form-group row">
                                                             <div class="col-sm-12">
-                                                                <input type="text"maxlength="100"name="quest_tr7" id="quest_tr7" class="form-control form-control-sm">
+                                                                <input type="text"maxlength="100"form="addform"name="quest_tr7" id="quest_tr7" class="form-control form-control-sm">
                                                             </div>
                                                         </div>
                                                     </td>
@@ -1102,6 +1151,8 @@
                                             </table>
                                         </div>                    
                                     </div>
+                                    <?php
+                                        if(isMobile()){?>          
                                     <div class="col-12" style="margin-top:30%">
                                         <div class="form-group row"  style="height: 300px;">
                                                     
@@ -1118,6 +1169,27 @@
                                                         </div> 
                                             </div>             
                                     </div> 
+                                    <?php  
+                                        }else{?>
+                                         <div class="card-body">
+                                                                    <div class="row">
+                                                                        <h4 class="card-title">Acquisizione Firma</h4>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                        <div id="signatureDiv">
+                                                                        
+                                                                        <img id="signatureImage" src="images/sign.png" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-footer">
+                                                                <input class="btn btn-success"type="button" id="signButton" value="Acquisisci" onClick="tabletDemo()" />
+
+                                                                </div>
+                                                                <? }
+                                                                    
+                                                                    ?>      
+
                                 </div>   
 
                             </div>  
@@ -1131,6 +1203,8 @@
                     </div>
                 </div>
             </div>
+            
+            
             <div class="modal fade" id="termcondmodal" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">

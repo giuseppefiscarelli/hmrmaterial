@@ -33,4 +33,4 @@ if(!empty($_SESSION['message'])){
           $numPages= ceil($totalUsers/$recordsPerPage);
           $users = getUsers($params);
           
-          require_once 'view/homeSetec.php';
+          require_once 'view/home/home_testride.php';

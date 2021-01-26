@@ -1,24 +1,18 @@
 <?php
-
-
-
     function getTestride(array $params = []){
-
       /**
        * @var $conn mysqli
        */
-
       $conn = $GLOBALS['mysqli'];
-
       $orderBy = array_key_exists('orderBy', $params) ? $params['orderBy'] : '';
       $orderDir = array_key_exists('orderDir', $params) ? $params['orderDir'] : 'ASC';
       $limit = (int)array_key_exists('recordsPerPage', $params) ? $params['recordsPerPage'] : 10;
       $search2 = (int)array_key_exists('search2', $params) ? $params['search2'] : '';
-      $search3 = array_key_exists('search3',$params)?date("Y-m-d H:i:s", strtotime($params['search3'])):date('Y-m-d H:i:s');
-      $search4 = array_key_exists('search4',$params)?date("Y-m-d 23:59:59", strtotime($params['search4'])):date('Y-m-d H:i:s');
+      $search3 = array_key_exists('search3',$params)?date("Y-m-d H:i:s", strtotime(str_replace("/","-",$params['search3']))):date('Y-m-d H:i:s');
+      $search4 = array_key_exists('search4',$params)?date("Y-m-d 23:59:59", strtotime(str_replace("/","-",$params['search4']))):date('Y-m-d H:i:s');
       $search5 = array_key_exists('search5', $params) ? $params['search5'] :'';
       $search6 = array_key_exists('search6', $params) ? $params['search6'] :'' ;
-      //var_dump($params);die;
+      //var_dump($search4);die;
       $page = (int)array_key_exists('page', $params) ? $params['page'] : 0;
       $start =$limit * ($page -1);
       if($start<0){
@@ -26,12 +20,7 @@
       }
       $search1 = array_key_exists('search1', $params) ? $params['search1'] : '';
       $search1 = $conn->escape_string($search1);
-
-      
       //$search2 = $conn->escape_string($search2);
-
-
-      
       if($orderDir !=='ASC' && $orderDir !=='DESC'){
       $orderDir = 'ASC';
       }
@@ -73,34 +62,24 @@
             }
           }
           if($search6){
-            $sql .="  user_pren ='$search6'";
-            
+            $sql .="  user_pren ='$search6'"; 
           }
-      
-
           $sql .= " ORDER BY $orderBy $orderDir LIMIT $start, $limit";
-          // var_dump($sql);
+         //  var_dump($sql);
           $res = $conn->query($sql);
           if($res) {
-
               while( $row = $res->fetch_assoc()) {
-                  $records[] = $row;
-                  
+                  $records[] = $row;   
               }
-
           }
-
       return $records;
-
-
     }
-
     function prtTestride(array $params = []){
 
       /**
        * @var $conn mysqli
        */
-
+     
       $conn = $GLOBALS['mysqli'];
 
       $orderBy = array_key_exists('orderBy', $params) ? $params['orderBy'] : '';
@@ -116,20 +95,27 @@
         $search3 = array_key_exists('search3',$params)?$params['search3']:'';
       }else{
         $search3 = array_key_exists('from',$params)?$params['from']:'';
+        $search3 = str_replace('/', '-', $search3);
+        $search3 = date("Y-m-d",strtotime($search3));
+      
 
       }
      
       if(array_key_exists('search4', $params)){
         $search4 = array_key_exists('search4',$params)?$params['search4']:'';
 
-      }else{ 
+      }else{
         $search4 = array_key_exists('to',$params)?$params['to']:'';
+       
+        $search4 = str_replace('/', '-', $search4);
+        $search4 = date("Y-m-d",strtotime($search4));
+        
       }
-    
+      
  
       $search5 = array_key_exists('search5', $params) ? $params['search5'] :'';
       $search6 = array_key_exists('search6', $params) ? $params['search6'] :'' ;
-     //var_dump($params);die;
+    
       $page = (int)array_key_exists('page', $params) ? $params['page'] : 0;
       $start =$limit * ($page -1);
       if($start<0){
@@ -146,7 +132,7 @@
       if($orderDir !=='ASC' && $orderDir !=='DESC'){
       $orderDir = 'ASC';
       }
-      $records = [];
+      $records = []; 
           
           $sql ='SELECT * FROM testride';
          if($search1 || $search2 || $search3 || $search4|| $search5|| $search6){
@@ -205,7 +191,6 @@
 
 
     }
-
     function getUsersList(){
 
       /**
@@ -239,7 +224,6 @@
       return $records;
 
     }
-
     function delete(int $id){
 
         /**
@@ -256,7 +240,6 @@
         
         
     }
-
     function getTest(int $id){
 
         /**
@@ -277,7 +260,6 @@
         
         
     }
-
     function getTestDay(){
 
       /**
@@ -304,7 +286,6 @@
       
       
     }
-
     function getEvent(){
 
         /**
@@ -313,25 +294,74 @@
       
           $conn = $GLOBALS['mysqli'];
             $result=[];
-            $sql ='SELECT * FROM testride ';
+            $sql ="SELECT * FROM testride where stato_test='P'";
             //echo $sql;
            
             
             $res = $conn->query($sql);
             if($res) {
 
-                while( $row = $res->fetch_assoc()) {
-                    $records[] = $row;
-                    
-                }
+              while( $row = $res->fetch_array()) {
+               $vei= getMotoInfo($row['id_veicolo']);
+               $cli= getClientecf($row['id_cliente']);
+               //var_dump($vei);
+                    if(!$vei){
+                      $vei['colore_tr']= 'green';
+                    }
+                    if(!$row['id_cliente']){
+                      $title= $vei['targa']." ".$vei['marca']." ".$vei['modello']." Prenotazione Online/Telefonica";
+                      $cliente = "Prenotazione Online / Telefonica - Cliente non Registrato";
+                      $contatti = $row['note_pren']?$row['note_pren']:'Dati non comunicati';
+                    }else{
+                      $title= $vei['targa']." ".$vei['marca']." ".$vei['modello']." ".$cli['nome']." ".$cli['cognome'];
+                      $cliente = $cli['id']." - ".$cli['nome']." ".$cli['cognome'];
+                      $contatti = $cli['mail1']." - ".$cli['mobile1'];
 
-            }
+                    }
+               
+                  $records[] =array(
+                    'title' => $title,
+                    'start' =>$row['data_pren'],
+                    'end' =>$row['data_ricons'],
+                    'color' =>$vei['colore_tr'],
+                    'alert' =>'Prenotazione: dal '.date("d/m/Y H:i", strtotime($row['data_pren']))." al ".date("d/m/Y H:i", strtotime($row['data_ricons']))."\n Cliente: ".$cliente."\n Contatti: ".$contatti."\n Veicolo: ".$vei['targa']." ".$vei['marca']." ".$vei['modello'],
+                    'id' => $row['id'],
 
-        return $records;
+                  );
+                  
+              }
+
+          }
+
+      return $records;
         
         
     }
+    function checkEvent($data){
 
+      /**
+       * @var $conn mysqli
+       */
+    
+        $conn = $GLOBALS['mysqli'];
+        $data_pren= date("Y-m-d H:i:s",strtotime($data['data_pren']));
+        $id_veicolo = $data['id_veicolo'];
+          $result=[];
+          $sql ="SELECT * FROM testride where data_pren <= '$data_pren' and data_ricons >= '$data_pren' and stato_test='P' and id_veicolo='$id_veicolo'";
+         // echo $sql;
+         
+          
+          $res = $conn->query($sql);
+         
+            
+          if($res && $res->num_rows){
+            $result = $res->fetch_assoc();
+            
+          }
+        return $result;
+        
+        
+    }
     function countTestride(array $params = []){
      /**
          * @var $conn mysqli
@@ -419,7 +449,6 @@
 
 
     }
-
     function getCliente($id){
 
         $conn = $GLOBALS['mysqli'];
@@ -436,7 +465,6 @@
          return $result;
     
     }
-
     function getClientecf($id){
 
         $conn = $GLOBALS['mysqli'];
@@ -453,7 +481,6 @@
          return $result;
     
     }
-
     function getMotoinfo($id){
 
         $conn = $GLOBALS['mysqli'];
@@ -470,7 +497,6 @@
          return $result;
     
     }
-
     function getValutazione($id){
 
       $conn = $GLOBALS['mysqli'];
@@ -487,7 +513,6 @@
        return $result;
   
     }
-
     function getMoto(){
 
         /**
@@ -514,7 +539,34 @@
         
         
     }
+    function getMoto2(){
 
+      /**
+       * @var $conn mysqli
+       */
+    
+        $conn = $GLOBALS['mysqli'];
+          $result=[];
+          $sql ="SELECT * FROM veicoli_usati WHERE ab_testride = 'S' ";
+         
+          $sql .="ORDER BY id";
+          //echo $sql;
+          $res = $conn->query($sql);
+          
+         
+      if($res) {
+
+          while( $row = $res->fetch_assoc()) {
+              $records[] = $row;
+              
+          }
+
+      }
+
+     return $records;
+      
+      
+    }
     function getMotoDisp(){
 
       /**
@@ -541,7 +593,6 @@
           
           
     }
-
     function getMotoCol($id){
 
       /**
@@ -563,35 +614,31 @@
       
       
     }
-
-    function getKM(){
+    function getKM($targa){
 
         /**
          * @var $conn mysqli
          */
         $conn = $GLOBALS['mysqli'];
-        $data =[];
-        $targa = $_REQUEST['id_veicolo'];
-        $sql ="SELECT * FROM veicoli_usati WHERE targa = '$targa'";
+        $result =[];
+       
+        $sql ="SELECT * FROM veicoli_usati WHERE targa = '$targa' and ab_testride ='S'";
         //print_r($sql);
         //echo $sql;die;
-        $result = $conn->query($sql);
+        $res = $conn->query($sql);
 
 
         
-        if ($result->num_rows > 0) {
-        // output data of each row
-                while( $row = $result->fetch_assoc()) {
-                break; 
-                
-                }
+        if($res && $res->num_rows){
+          $result = $res->fetch_assoc();
+          
         }
+      return $result;
+    
         
-
-
-        echo json_encode($row);
+        
+        
     }
-
     function upKM($targa,$km){
 
       /**
@@ -617,7 +664,6 @@
         }
       return $result;
     }
-
     function saveTestride(array $data){ 
 
         /**
@@ -634,26 +680,48 @@
             $user_pren = $_SESSION['userData']['username'];
             $data_pren = $conn->escape_string($data['data_pren']);
             $id_cliente =  $conn->escape_string($data['codfiscale']);
-            $id_veicolo =  $conn->escape_string($data['targa']);
+
+            $id_veicolo =  $conn->escape_string($data['id_veicolo']);
             $durata_test =  $conn->escape_string($data['durata_test']);
             $ora_pren =  $conn->escape_string($data['ora_pren']);
             $km_cons =  $conn->escape_string($data['km_cons']);
             $note_pren =$conn->escape_string($data['note_pren']);
             $stato_test = 'P';
-            //$durata_test =date("i:s",$conn->escape_string($data['durata_test']));
-            //$km_cons =  $conn->escape_string($data['km_cons']);
+            $durata_test =$conn->escape_string($data['durata_test']);
+            $durata_test=intval($durata_test);
+           // var_dump($durata_test);die;
+            if($durata_test==800){
+              
+             // $dataric=date("Y-m-d",strtotime($data_pren));
+              $dataric=$data_pren." 23:59:59";
+              $data_ricons=date("Y-m-d H:i:s",strtotime($dataric));
 
+            }elseif($durata_test==1000){
+              $ora_ricons = $conn->escape_string($data['ora_ricons']);
+              $data_ricons=$conn->escape_string($data['data_ricons']);
+              $data_ricons=$data_ricons." ". $ora_ricons;
+
+
+
+
+            }else{
+              $data_ricons= $data_pren." ".$ora_pren;
+              $data_ricons = date('Y-m-d H:i:s', strtotime(''.$data_ricons.' + '.$durata_test.' minute'));
+
+            }
+            //$km_cons =  $conn->escape_string($data['km_cons']);
+           
             
             $result=0;
-            $sql ='INSERT INTO testride (id, stato_test, cod_ambiente, cod_azienda, cod_filiale, user_ins, data_ins, user_pren, data_pren, id_cliente, id_veicolo, km_cons, durata_test,note_pren) ';
+            $sql ='INSERT INTO testride (id, stato_test, cod_ambiente, cod_azienda, cod_filiale, user_ins, data_ins, user_pren, data_pren,data_ricons, id_cliente, id_veicolo, km_cons, durata_test,note_pren) ';
             
-            $sql .=" VALUE ( NULL,'$stato_test','$cod_ambiente', '$cod_azienda', '$cod_filiale', '$user_ins', '$data_ins',  '$user_pren', '$data_pren $ora_pren', '$id_cliente', '$id_veicolo' ,'$km_cons' ,'$durata_test', '$note_pren')";
+            $sql .=" VALUE ( NULL,'$stato_test','$cod_ambiente', '$cod_azienda', '$cod_filiale', '$user_ins', '$data_ins',  '$user_pren', '$data_pren $ora_pren', '$data_ricons','$id_cliente', '$id_veicolo' ,'$km_cons' ,'$durata_test', '$note_pren')";
             
             
             
             
            //print_r($data);
-          // echo $sql;die;
+           //echo $sql;die;
             $res = $conn->query($sql);
             
             if($res ){
@@ -668,7 +736,6 @@
         
         
     }
-
     function saveTestridefast(array $data){ 
  
       /**
@@ -699,7 +766,7 @@
           $data_ins = date('Y-m-d H:i:s');
           
           $id_cliente =  $conn->escape_string($data['codfiscale']);
-          $id_veicolo =  $conn->escape_string($data['targa']);
+          $id_veicolo =  $conn->escape_string($data['id_veicolo']);
           $durata_test =  $conn->escape_string($data['durata_test']);
           $stato_test = "C";
           $km_cons =  $conn->escape_string($data['km_cons']);
@@ -716,13 +783,14 @@
           
           
           
-         // print_r($data);
-         // echo $sql;die;
+          //print_r($data);
+          //echo $sql;die;
           $res = $conn->query($sql);
           
           if($res ){
             $result =  $conn->affected_rows;
             $last_id = mysqli_insert_id($conn);
+            intestVeicolo($id_veicolo,$km_cons);
              //echo "New record created successfully. Last inserted ID is: " . $last_id;
              return $last_id;
           }else{
@@ -732,7 +800,6 @@
       
       
     }
-
     function storeTestride(array $data,int $id){ 
 
         /**
@@ -779,7 +846,6 @@
         
         
     }
-
     function storeTestridePage($data,int $id){ 
 
       /**
@@ -813,7 +879,6 @@
       
       
     }
-
     function storeTestrideCons(array $data,int $id){ 
 
         /**
@@ -869,7 +934,6 @@
         
         
     }
-
     function storeTestrideRicons(array $data,int $id){ 
 
       /**
@@ -907,7 +971,6 @@
       
       
     }
-
     function getPatente($id){
 
         /**
@@ -928,7 +991,6 @@
         
         
     }
-
     function saveQuest(array $data){ 
 
       /**
@@ -994,5 +1056,29 @@
       
       
     }
-    
-    
+    function intestVeicolo($targa,$km){
+        /**
+       * @var $conn mysqli
+       */
+      $conn = $GLOBALS['mysqli'];
+      $result=0;
+      
+      $sql ="UPDATE veicoli_usati SET stato_tr = 'T', km = $km WHERE targa = '$targa' and ab_testride ='S' ";
+      //print_r($sql);
+      //echo $sql;die;
+      $result = $conn->query($sql);
+
+
+      
+      $res = $conn->query($sql);
+            
+        if($res ){
+              $result =  $conn->affected_rows;
+              
+        }else{
+              $result -1;  
+        }
+      return $result;
+
+
+    }

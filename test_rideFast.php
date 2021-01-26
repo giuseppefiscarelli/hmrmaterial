@@ -34,12 +34,19 @@ require_once 'headerInclude.php';
         color: #000000;
         box-shadow: none;
     }
+    .carousel-item img.wide {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+}
 
 </style>
  <!--Start Dashboard Content-->	
  <div class="content" style="background-image: url(images/6.jpg);background-size:cover;background-attachment: fixed;">
     <div class="container-fluid">
 
+
+    
     
     <?php
     if(!empty($_SESSION['message'])){
@@ -59,21 +66,26 @@ require_once 'headerInclude.php';
      $action = getParam('action',0);
      $moto = getMotoDisp();
      require_once 'view/testride/formTest_rideFast.php';
+    // var_dump($_SERVER);
      ?>
 
 
      </div></div> 
      <?php
-    require_once 'view/footer.php';
+    require_once 'view/template/footer.php';
+    if(!isMobile()){
+        //require_once 'view/wacomlogo.php';
+        require_once 'view/wacom/wacomsign.php';
+      }
 ?> 
 <script>
-        daticliente=16
+        daticliente=16 
         consensi=17
         firma=17
         veicolo=16
         statoveicolo=17
         durata=17
-    	$(function(){
+   
             
             CodiceFiscale.utils.birthplaceFields("#provres", "#luogores");
             $("#provres").val("RM").change();
@@ -82,7 +94,7 @@ require_once 'headerInclude.php';
             CodiceFiscale.utils.birthplaceFields("#provnasc", "#luogonasc");
             $("#provnasc").val("RM").change();
             setTimeout(()=>$("#luogonasc").val("H501"), 200);
-            $('#cf').click(function(ev){
+        $('#cf').click(function(ev){
                 
                     ev.preventDefault();
                     let cf = new CodiceFiscale({
@@ -95,7 +107,7 @@ require_once 'headerInclude.php';
                     $("#codfiscale").val(cf.toString());
                     //checkcli(cf.toString());
 
-            });
+        });
         $('#addCli').click(function(e){
             $.validator.messages.required = "Campo Obbligatorio!";
             form = $( "#addformcli" )
@@ -103,20 +115,39 @@ require_once 'headerInclude.php';
             console.log(form.valid())
             e.preventDefault()
             if(form.valid()){
-            UpFoto();
+            action= $('#actionCli').val();
             var fields = $( "#addformcli" ).serializeArray();
             //$("#addformcli").validate();
            //upload foto
-                    
+                    if(action ==='newCli'){
                     $.ajax({
                         url: "controller/updateAnagr_cli.php?action=newCli",
                         type:"POST",
                         data: fields,
                         dataType: 'json',
-                        cache: false
+                        cache: false,
+                        success: function (data) {
+                                if (data) {
+                                    $('#modal1').modal('toggle')
+                                console.log(data);
+                                UpFoto(data);
+                                    alert='<div id="message2"class="alert alert-success" role="alert" style="z-index: 1000;position: fixed;right: 10px;top: 70px;">Nuovo cliente inserito</div>'   
+                                    $( ".container-fluid" ).append(alert);
+                                    $(".alert").delay(6000).slideUp(200, function() {
+                                        $(this).alert('close');
+                                    });
+                                getCli(data)   
+                                } else {
+                                    alert='<div class="alert alert-danger" role="alert" style="z-index: 1000;position: fixed;right: 10px;top: 70px;">This is a danger alert—check it out!</div>'
+                                        $( ".container-fluid" ).append(alert);
+                                    }
+                                
+                        }
                     });
                 }
 
+                }
+                
         });
         $( "#autocomplete" ).autocomplete({
            
@@ -125,7 +156,7 @@ require_once 'headerInclude.php';
          
           
                 $.ajax({
-                    url: "script/autoUser.php",
+                    url: "controller/updateAnagr_cli.php?action=autoUser",
                     type: 'post',
                     dataType: 'json',
                     data: {
@@ -167,7 +198,8 @@ require_once 'headerInclude.php';
 
                 $('#autocomplete').val("");
                 $('#cli_dett').show();
-                $('#id_cliente').val(ui.item.codfiscale);
+                $('#id_cliente').val(ui.item.id);
+                $('#id_cf').val(ui.item.codfiscale)
                 btn = '<i class="fa fa-user"></i> Aggiorna dati Cliente';
                 $('#actionCli').val('saveCliente');
                 $('#addbtncli,#addCli').html(btn);
@@ -215,6 +247,7 @@ require_once 'headerInclude.php';
                 $('.mail1').html(ui.item.mail1);
                 $('.mobile1').html(ui.item.mobile1);
                 $('#rowfirma').show();
+                $('#modal1title').text('Aggiornamento dati Cliente');
                 checkCli(ui);
                 getPatente(ui.item.codfiscale,ui.item.id);
              
@@ -240,11 +273,14 @@ require_once 'headerInclude.php';
                     },
                     
                     success: function (data) {
-                             console.log(data.km);
+                             console.log(data);
                               
                            if(data){
+
                             $('#rowstato').show();
                                $('#km_cons').val(data.km);
+                               targa = (data.targa).trim();
+                               $('#btn_stat_vei').attr('onclick','getVei(\''+targa+'\');')
                                anomalie = data.presenza_danni;
                                if(anomalie =="S"){
 
@@ -323,22 +359,18 @@ require_once 'headerInclude.php';
 
         });
 
-        
-
-
-
-
-
-
-
-      
-
-    });
+   
+    
     function conferma(){
-        var jsignCode = signaturePad.toDataURL();
-        // console.log(jsignCode)
-         
-         $("#signCode").val(jsignCode);
+        <?php if(isMobile()){?>
+			var jsignCode = signaturePad.toDataURL();
+ 		
+ 			$("#signCode").val(jsignCode); 
+      <?}else{?>
+        jsignCode =  document.getElementById("signatureImage").src;
+        $("#signCode").val(jsignCode); 
+
+      <? } ?>
          checkfirma =   $("#signCode").val()
          //console.log(checkfirma)
         if(checkfirma.length > 2682){
@@ -400,6 +432,49 @@ require_once 'headerInclude.php';
 
        
     }
+    function checkClib(data){
+       // console.log(ui);
+        checkAna = 1
+        checkRes = 1
+        checkCon = 1
+        luogonasc= $('.luogonasc').html()
+        luogores= $('.luogores').html()
+        capres = $('.capres').html()
+        //console.log(luogonasc)
+        if(luogonasc == null || data.provnasc == null ||  data.datanasc == null){
+
+            checkAna = 0;
+            $('#checkAna').html('<i aria-hidden="true" class="fa fa-warning" ></i> Dati Anagrafici Incompleti</a>')
+            $('#checkAna').removeClass("btn-success").addClass("btn-warning")
+        }else{
+            $('#checkAna').html('<i aria-hidden="true" class="fa fa-check" ></i> Dati Anagrafici Completi</a>')
+            $('#checkAna').removeClass("btn-warning").addClass("btn-success")
+        }
+        if(capres.length < 5 || luogores==null ||  data.indirizzores == null||data.provres == null){
+            checkRes = 0
+            $('#checkRes').html('<i aria-hidden="true" class="fa fa-warning" ></i> Dati Residenza Incompleti</a>')
+            $('#checkRes').removeClass("btn-success").addClass("btn-warning")
+
+
+        }else{
+            $('#checkRes').html('<i aria-hidden="true" class="fa fa-check" ></i> Dati Residenza Completi</a>')
+            $('#checkRes').removeClass("btn-warning").addClass("btn-success")
+
+        }
+        if(data.mail1.length == 0||data.mobile1.length == 0){
+            checkRes = 0
+            $('#checkCon').html('<i aria-hidden="true" class="fa fa-warning" ></i> Dati Contatti Incompleti</a>')
+            $('#checkCon').removeClass("btn-success").addClass("btn-warning")
+
+
+        }else{
+            $('#checkCon').html('<i aria-hidden="true" class="fa fa-check" ></i> Dati Contatti Completi</a>')
+            $('#checkCon').removeClass("btn-warning").addClass("btn-success")
+
+        }
+
+       
+    }
     
     function getPatente(cf,id){
         checkPat=0
@@ -413,7 +488,7 @@ require_once 'headerInclude.php';
         $('.numero_patente').html("")
         $('.tipo_patente').html("")
                 $.ajax({
-                    url: "script/getPatente.php",
+                    url: "controller/updateAnagr_cli.php?action=getPatente",
                     type: 'post',
                     dataType: 'json',
                     data: {
@@ -483,7 +558,7 @@ require_once 'headerInclude.php';
   
     function getComune(cod,e){
         $.ajax({
-                    url: "script/getComune2.php",
+                    url: "controller/updateAnagr_cli.php?action=getComune",
                     type: 'post',
                     dataType: 'json',
                     data: {
@@ -505,14 +580,14 @@ require_once 'headerInclude.php';
 
     }
  
-    function UpFoto(){
+    function UpFoto(id){
             var patfront = $("#patfront").prop("files")[0];   
             var patrear = $("#patrear").prop("files")[0];   
             var form_data = new FormData();
             form_data.append("patfront", patfront);
             form_data.append("patrear", patrear);
             $.ajax({
-                        url: "controller/updateAnagr_cli.php?action=upFoto",
+                        url: "controller/updateAnagr_cli.php?action=upFoto&id="+id,
                         type:"POST",
                         data: form_data,
                         dataType: 'script',
@@ -605,13 +680,160 @@ require_once 'headerInclude.php';
         }
 
     }
+    function getCli(id){
 
-    var signaturePad;
-	
-	var canvas; 
+        $.ajax({
+                    url: "controller/updateAnagr_cli.php?action=getClienteId",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {id:id},
+                    //success: function(data) {
+                    //response(data);
+                    //},
+                    success: function (data) {
+                               
+                               $('.id_cliente').html("");
+                $('.cognome').html("");
+                $('.nome').html("ui.item.nome");
+                $('.provnasc').html("ui.item.provnasc");
+                $('.datanasc').html("");
+                $('.codfiscale').html("");
+                $('.indirizzores').html("");
+                $('.provres').html("");
+                $('.capres').html("");
+                $('.mail1').html("");
+                $('.mobile1').html("");
+
+
+
+                $('#autocomplete').val("");
+                $('#cli_dett').show();
+                $('#id_cliente').val(data.id);
+                $('#id_cf').val(data.codfiscale)
+                btn = '<i class="fa fa-user"></i> Aggiorna dati Cliente';
+                $('#actionCli').val('saveCliente');
+                $('#addbtncli,#addCli').html(btn);
+
+                $('#ragsociale').val(data.ragsociale);
+                $('#cognome').val(data.cognome);
+                $('#nome').val(data.nome);
+                $('#datanasc').val(data.datanasc);
+                $('#nazionalita').val(data.nazionalita);
+                $('#sesso').val(data.sesso).change();
+                $('#codfiscale').val(data.codfiscale);
+                $('#partitaiva').val(data.partitaiva);
+                $('#indirizzores').val(data.indirizzores);
+                $('#capres').val(data.capres);
+                $('#mail1').val(data.mail1);
+                $('#mail2').val(data.mail2);
+                $('#tel1').val(data.tel1);
+                $('#tel2').val(data.tel2);
+                $('#mobile1').val(data.mobile1);
+                $('#mobile2').val(data.mobile2);
+
+                
+                $("#provres").val(data.provres).change();
+                $("#luogores").val(data.luogores);
+                 getComune(data.luogores,"luogores");
+               
+              
+                $("#provnasc").val(data.provnasc).change();
+                $("#luogonasc").val(data.luogonasc)
+                getComune(data.luogonasc,"luogonasc");
+
+                $('.id_cliente').html(data.id);
+                $('.cognome').html(data.cognome);
+                $('.nome').html(data.nome);
+                $('.provnasc').html(data.provnasc);
+               
+                var datanasc = new Date(data.datanasc);
+                var newDatanasc = datanasc.getDate()+"/"+(datanasc.getMonth()+1)+"/"+datanasc.getFullYear();
+                $('.datanasc').html(newDatanasc);
+                $('.codfiscale').html(data.codfiscale);
+                $('.indirizzores').html(data.indirizzores);
+                $('.provres').html(data.provres);
+               
+                $('.capres').html(data.capres);
+                $('.mail1').html(data.mail1);
+                $('.mobile1').html(data.mobile1);
+                $('#rowfirma').show();
+                $('#modal1title').text('Aggiornamento dati Cliente');
+                checkClib(data);
+                getPatente(data.codfiscale,data.id);
+
+                                
+                        }
+                        
+                    });
+
+
+
+
+    }
+
+    function getVei(targa){
+        
+        $.ajax({
+                    url: "controller/updateTestride.php?action=getkm",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {id_veicolo:targa},
+                    //success: function(data) {
+                    //response(data);
+                    //},
+                    success: function (data) {
+                               console.log(data)
+                               $('#modal_targa').text(data.targa); 
+                               $('#modal_marca').text(data.marca); 
+                               $('#modal_modello').text(data.modello); 
+                               $('#modal_km').text(data.km); 
+
+
+                               if(data.stato_officina==null){
+                                   officina= "Non Disponibile";
+
+
+                               }else{
+                                   officina=data.stato_officina;
+                               };
+
+                               if(data.presenza_danni==null){
+                                  danni="Non Disponibile";
+                               }else{
+                                   danni = '<span class="badge badge-warning">Presenti</span>';
+                               };
+                               $('#modal_stato_veicolo').text(officina); 
+                               
+                               var mod_date = new Date(data.data_mod);
+                                var dd = String(mod_date.getDate()).padStart(2, '0');
+                                var mm = String(mod_date.getMonth() + 1).padStart(2, '0'); //January is 0!
+                                var yyyy = mod_date.getFullYear();
+
+                                mod_date = mm + '/' + dd + '/' + yyyy;
+                               $('#modal_mod_date').text(mod_date); 
+                               $('#modal_mod_user').text(data.user_mod); 
+                               $('#modal_anomalie').html(danni); 
+
+                             
+                        }
+                        
+                    });
+
+
+
+
+    }
+
+
+    <?php if(isMobile()){?>
+        var signaturePad;
+	    var canvas; 
     $(document).ready(function() {
       setFormValidation('#RegisterValidation');
+     
         //signature pad mobile
+
+       
         var wrapper = document.getElementById("signature-pad"),
 		clearButton = wrapper.querySelector("[data-action=clear]");
         canvas = wrapper.querySelector("canvas");
@@ -619,39 +841,41 @@ require_once 'headerInclude.php';
 		clearButton.addEventListener("click", function (event) {
 		signaturePad.clear();
             });
-            
+        })
+    <?}?>
+    $(document).ready(function() {    
+      
+        function patfront(input) {
+                if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
-            function patfront(input) {
-                 if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-    
-                    reader.onload = function(e) {
-                    $('#patfront_pw').attr('src', e.target.result);
-                    
-                    }
-    
-                    reader.readAsDataURL(input.files[0]); // convert to base64 string
+                reader.onload = function(e) {
+                $('#patfront_pw').attr('src', e.target.result);
+                
                 }
-            }
-            function patrear(input) {
-                 if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-    
-                    reader.onload = function(e) {
-                   
-                    $('#patrear_pw').attr('src', e.target.result);
-                    }
-    
-                    reader.readAsDataURL(input.files[0]); // convert to base64 string
-                }
-            }
 
-            $("#patfront").change(function() {
-                patfront(this);
-            }); 
-            $("#patrear").change(function() {
-                patrear(this);
-            }); 
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+        function patrear(input) {
+                if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                
+                $('#patrear_pw').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+
+        $("#patfront").change(function() {
+            patfront(this);
+        }); 
+        $("#patrear").change(function() {
+            patrear(this);
+        }); 
        
     });
 
